@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local config / secrets
+.env
+
+# Databases (regenerated: cache.db warms on boot, search.db seeds from CSVs)
+*.db
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+
+# OS
+.DS_Store
+Thumbs.db

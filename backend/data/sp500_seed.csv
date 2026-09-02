@@ -1,0 +1,504 @@
+symbol,name,sector,exchange,is_seed
+A,Agilent Technologies,Health Care,NYQ,True
+AAPL,Apple Inc.,Information Technology,NMS,True
+ABBV,AbbVie,Health Care,NYQ,True
+ABNB,Airbnb,Consumer Discretionary,NMS,True
+ABT,Abbott Laboratories,Health Care,NYQ,True
+ACGL,Arch Capital Group,Financials,NMS,True
+ACN,Accenture,Information Technology,NYQ,True
+ADBE,Adobe Inc.,Information Technology,NMS,True
+ADI,Analog Devices,Information Technology,NMS,True
+ADM,Archer Daniels Midland,Consumer Staples,NYQ,True
+ADP,Automatic Data Processing,Industrials,NMS,True
+ADSK,Autodesk,Information Technology,NMS,True
+AEE,Ameren,Utilities,NYQ,True
+AEP,American Electric Power,Utilities,NMS,True
+AES,AES Corporation,Utilities,NYQ,True
+AFL,Aflac,Financials,NYQ,True
+AIG,American International Group,Financials,NYQ,True
+AIZ,Assurant,Financials,NYQ,True
+AJG,Arthur J. Gallagher & Co.,Financials,NYQ,True
+AKAM,Akamai Technologies,Information Technology,NMS,True
+ALB,Albemarle Corporation,Materials,NYQ,True
+ALGN,Align Technology,Health Care,NMS,True
+ALL,Allstate,Financials,NYQ,True
+ALLE,Allegion,Industrials,NYQ,True
+AMAT,Applied Materials,Information Technology,NMS,True
+AMCR,Amcor,Materials,NYQ,True
+AMD,Advanced Micro Devices,Information Technology,NMS,True
+AME,Ametek,Industrials,NYQ,True
+AMGN,Amgen,Health Care,NMS,True
+AMP,Ameriprise Financial,Financials,NYQ,True
+AMT,American Tower,Real Estate,NYQ,True
+AMZN,Amazon,Consumer Discretionary,NMS,True
+ANET,Arista Networks,Information Technology,NYQ,True
+AON,Aon plc,Financials,NYQ,True
+AOS,A. O. Smith,Industrials,NYQ,True
+APA,APA Corporation,Energy,NMS,True
+APD,Air Products,Materials,NYQ,True
+APH,Amphenol,Information Technology,NYQ,True
+APO,Apollo Global Management,Financials,NYQ,True
+APP,AppLovin,Information Technology,NMS,True
+APTV,Aptiv,Consumer Discretionary,NYQ,True
+ARE,Alexandria Real Estate Equities,Real Estate,NYQ,True
+ARES,Ares Management,Financials,NYQ,True
+ATO,Atmos Energy,Utilities,NYQ,True
+AVB,AvalonBay Communities,Real Estate,NYQ,True
+AVGO,Broadcom,Information Technology,NMS,True
+AVY,Avery Dennison,Materials,NYQ,True
+AWK,American Water Works,Utilities,NYQ,True
+AXON,Axon Enterprise,Industrials,NMS,True
+AXP,American Express,Financials,NYQ,True
+AZO,AutoZone,Consumer Discretionary,NYQ,True
+BA,Boeing,Industrials,NYQ,True
+BAC,Bank of America,Financials,NYQ,True
+BALL,Ball Corporation,Materials,NYQ,True
+BAX,Baxter International,Health Care,NYQ,True
+BBY,Best Buy,Consumer Discretionary,NYQ,True
+BDX,Becton Dickinson,Health Care,NYQ,True
+BEN,Franklin Resources,Financials,NYQ,True
+BF-B,Brown–Forman,Consumer Staples,NYQ,True
+BG,Bunge Global,Consumer Staples,NYQ,True
+BIIB,Biogen,Health Care,NMS,True
+BKNG,Booking Holdings,Consumer Discretionary,NMS,True
+BKR,Baker Hughes,Energy,NMS,True
+BLDR,Builders FirstSource,Industrials,NYQ,True
+BLK,BlackRock,Financials,NYQ,True
+BMY,Bristol Myers Squibb,Health Care,NYQ,True
+BNY,BNY Mellon,Financials,NYQ,True
+BR,Broadridge Financial Solutions,Industrials,NYQ,True
+BRK-B,Berkshire Hathaway,Financials,NYQ,True
+BRO,Brown & Brown,Financials,NYQ,True
+BSX,Boston Scientific,Health Care,NYQ,True
+BX,Blackstone Inc.,Financials,NYQ,True
+BXP,"BXP, Inc.",Real Estate,NYQ,True
+C,Citigroup,Financials,NYQ,True
+CAG,Conagra Brands,Consumer Staples,NYQ,True
+CAH,Cardinal Health,Health Care,NYQ,True
+CARR,Carrier Global,Industrials,NYQ,True
+CASY,Casey's,Consumer Staples,NMS,True
+CAT,Caterpillar Inc.,Industrials,NYQ,True
+CB,Chubb Limited,Financials,NYQ,True
+CBOE,Cboe Global Markets,Financials,BTS,True
+CBRE,CBRE Group,Real Estate,NYQ,True
+CCI,Crown Castle,Real Estate,NYQ,True
+CCL,Carnival Corporation,Consumer Discretionary,NYQ,True
+CDNS,Cadence Design Systems,Information Technology,NMS,True
+CDW,CDW Corporation,Information Technology,NMS,True
+CEG,Constellation Energy,Utilities,NMS,True
+CF,CF Industries,Materials,NYQ,True
+CFG,Citizens Financial Group,Financials,NYQ,True
+CHD,Church & Dwight,Consumer Staples,NYQ,True
+CHRW,C.H. Robinson,Industrials,NMS,True
+CHTR,Charter Communications,Communication Services,NMS,True
+CI,Cigna,Health Care,NYQ,True
+CIEN,Ciena,Information Technology,NYQ,True
+CINF,Cincinnati Financial,Financials,NMS,True
+CL,Colgate-Palmolive,Consumer Staples,NYQ,True
+CLX,Clorox,Consumer Staples,NYQ,True
+CMCSA,Comcast,Communication Services,NMS,True
+CME,CME Group,Financials,NMS,True
+CMG,Chipotle Mexican Grill,Consumer Discretionary,NYQ,True
+CMI,Cummins,Industrials,NYQ,True
+CMS,CMS Energy,Utilities,NYQ,True
+CNC,Centene Corporation,Health Care,NYQ,True
+CNP,CenterPoint Energy,Utilities,NYQ,True
+COF,Capital One,Financials,NYQ,True
+COHR,Coherent Corp.,Information Technology,NYQ,True
+COIN,Coinbase,Financials,NMS,True
+COO,Cooper Companies (The),Health Care,NMS,True
+COP,ConocoPhillips,Energy,NYQ,True
+COR,Cencora,Health Care,NYQ,True
+COST,Costco,Consumer Staples,NMS,True
+CPAY,Corpay,Financials,NYQ,True
+CPB,Campbell's Company (The),Consumer Staples,NMS,True
+CPRT,Copart,Industrials,NMS,True
+CPT,Camden Property Trust,Real Estate,NYQ,True
+CRH,CRH plc,Materials,NYQ,True
+CRL,Charles River Laboratories,Health Care,NYQ,True
+CRM,Salesforce,Information Technology,NYQ,True
+CRWD,CrowdStrike,Information Technology,NMS,True
+CSCO,Cisco,Information Technology,NMS,True
+CSGP,CoStar Group,Real Estate,NMS,True
+CSX,CSX Corporation,Industrials,NMS,True
+CTAS,Cintas,Industrials,NMS,True
+CTSH,Cognizant,Information Technology,NMS,True
+CTVA,Corteva,Materials,NYQ,True
+CVNA,Carvana,Consumer Discretionary,NYQ,True
+CVS,CVS Health,Health Care,NYQ,True
+CVX,Chevron Corporation,Energy,NYQ,True
+D,Dominion Energy,Utilities,NYQ,True
+DAL,Delta Air Lines,Industrials,NYQ,True
+DASH,DoorDash,Consumer Discretionary,NMS,True
+DD,DuPont,Materials,NYQ,True
+DDOG,Datadog,Information Technology,NMS,True
+DE,Deere & Company,Industrials,NYQ,True
+DECK,Deckers Brands,Consumer Discretionary,NYQ,True
+DELL,Dell Technologies,Information Technology,NYQ,True
+DG,Dollar General,Consumer Staples,NYQ,True
+DGX,Quest Diagnostics,Health Care,NYQ,True
+DHI,D. R. Horton,Consumer Discretionary,NYQ,True
+DHR,Danaher Corporation,Health Care,NYQ,True
+DIS,Walt Disney Company (The),Communication Services,NYQ,True
+DLR,Digital Realty,Real Estate,NYQ,True
+DLTR,Dollar Tree,Consumer Staples,NMS,True
+DOC,Healthpeak Properties,Real Estate,NYQ,True
+DOV,Dover Corporation,Industrials,NYQ,True
+DOW,Dow Inc.,Materials,NYQ,True
+DPZ,Domino's,Consumer Discretionary,NMS,True
+DRI,Darden Restaurants,Consumer Discretionary,NYQ,True
+DTE,DTE Energy,Utilities,NYQ,True
+DUK,Duke Energy,Utilities,NYQ,True
+DVA,DaVita,Health Care,NYQ,True
+DVN,Devon Energy,Energy,NYQ,True
+DXCM,Dexcom,Health Care,NMS,True
+EA,Electronic Arts,Communication Services,NMS,True
+EBAY,eBay Inc.,Consumer Discretionary,NMS,True
+ECL,Ecolab,Materials,NYQ,True
+ED,Consolidated Edison,Utilities,NYQ,True
+EFX,Equifax,Industrials,NYQ,True
+EG,Everest Group,Financials,NYQ,True
+EIX,Edison International,Utilities,NYQ,True
+EL,Estée Lauder Companies (The),Consumer Staples,NYQ,True
+ELV,Elevance Health,Health Care,NYQ,True
+EME,Emcor,Industrials,NYQ,True
+EMR,Emerson Electric,Industrials,NYQ,True
+EOG,EOG Resources,Energy,NYQ,True
+EPAM,EPAM Systems,Information Technology,NYQ,True
+EQIX,Equinix,Real Estate,NMS,True
+EQR,Equity Residential,Real Estate,NYQ,True
+EQT,EQT Corporation,Energy,NYQ,True
+ERIE,Erie Indemnity,Financials,NMS,True
+ES,Eversource Energy,Utilities,NYQ,True
+ESS,Essex Property Trust,Real Estate,NYQ,True
+ETN,Eaton Corporation,Industrials,NYQ,True
+ETR,Entergy,Utilities,NYQ,True
+EVRG,Evergy,Utilities,NMS,True
+EW,Edwards Lifesciences,Health Care,NYQ,True
+EXC,Exelon,Utilities,NMS,True
+EXE,Expand Energy,Energy,NMS,True
+EXPD,Expeditors International,Industrials,NYQ,True
+EXPE,Expedia Group,Consumer Discretionary,NMS,True
+EXR,Extra Space Storage,Real Estate,NYQ,True
+F,Ford Motor Company,Consumer Discretionary,NYQ,True
+FANG,Diamondback Energy,Energy,NMS,True
+FAST,Fastenal,Industrials,NMS,True
+FCX,Freeport-McMoRan,Materials,NYQ,True
+FDS,FactSet,Financials,NYQ,True
+FDX,FedEx,Industrials,NYQ,True
+FE,FirstEnergy,Utilities,NYQ,True
+FFIV,"F5, Inc.",Information Technology,NMS,True
+FICO,Fair Isaac,Information Technology,NYQ,True
+FIS,Fidelity National Information Services,Financials,NYQ,True
+FISV,Fiserv,Financials,NMS,True
+FITB,Fifth Third Bancorp,Financials,NMS,True
+FIX,Comfort Systems USA,Industrials,NYQ,True
+FOX,Fox Corporation (Class B),Communication Services,NMS,True
+FOXA,Fox Corporation (Class A),Communication Services,NMS,True
+FRT,Federal Realty Investment Trust,Real Estate,NYQ,True
+FSLR,First Solar,Information Technology,NMS,True
+FTNT,Fortinet,Information Technology,NMS,True
+FTV,Fortive,Industrials,NYQ,True
+GD,General Dynamics,Industrials,NYQ,True
+GDDY,GoDaddy,Information Technology,NYQ,True
+GE,GE Aerospace,Industrials,NYQ,True
+GEHC,GE HealthCare,Health Care,NMS,True
+GEN,Gen Digital,Information Technology,NMS,True
+GEV,GE Vernova,Industrials,NYQ,True
+GILD,Gilead Sciences,Health Care,NMS,True
+GIS,General Mills,Consumer Staples,NYQ,True
+GL,Globe Life,Financials,NYQ,True
+GLW,Corning Inc.,Information Technology,NYQ,True
+GM,General Motors,Consumer Discretionary,NYQ,True
+GNRC,Generac,Industrials,NYQ,True
+GOOG,Alphabet Inc. (Class C),Communication Services,NMS,True
+GOOGL,Alphabet Inc. (Class A),Communication Services,NMS,True
+GPC,Genuine Parts Company,Consumer Discretionary,NYQ,True
+GPN,Global Payments,Financials,NYQ,True
+GRMN,Garmin,Consumer Discretionary,NYQ,True
+GS,Goldman Sachs,Financials,NYQ,True
+GWW,W. W. Grainger,Industrials,NYQ,True
+HAL,Halliburton,Energy,NYQ,True
+HAS,Hasbro,Consumer Discretionary,NMS,True
+HBAN,Huntington Bancshares,Financials,NMS,True
+HCA,HCA Healthcare,Health Care,NYQ,True
+HD,Home Depot (The),Consumer Discretionary,NYQ,True
+HIG,Hartford (The),Financials,NYQ,True
+HII,Huntington Ingalls Industries,Industrials,NYQ,True
+HLT,Hilton Worldwide,Consumer Discretionary,NYQ,True
+HON,Honeywell,Industrials,NMS,True
+HOOD,Robinhood Markets,Financials,NMS,True
+HPE,Hewlett Packard Enterprise,Information Technology,NYQ,True
+HPQ,HP Inc.,Information Technology,NYQ,True
+HRL,Hormel Foods,Consumer Staples,NYQ,True
+HSIC,Henry Schein,Health Care,NMS,True
+HST,Host Hotels & Resorts,Real Estate,NMS,True
+HSY,Hershey Company (The),Consumer Staples,NYQ,True
+HUBB,Hubbell Incorporated,Industrials,NYQ,True
+HUM,Humana,Health Care,NYQ,True
+HWM,Howmet Aerospace,Industrials,NYQ,True
+IBKR,Interactive Brokers,Financials,NMS,True
+IBM,IBM,Information Technology,NYQ,True
+ICE,Intercontinental Exchange,Financials,NYQ,True
+IDXX,Idexx Laboratories,Health Care,NMS,True
+IEX,IDEX Corporation,Industrials,NYQ,True
+IFF,International Flavors & Fragrances,Materials,NYQ,True
+INCY,Incyte,Health Care,NMS,True
+INTC,Intel,Information Technology,NMS,True
+INTU,Intuit,Information Technology,NMS,True
+INVH,Invitation Homes,Real Estate,NYQ,True
+IP,International Paper,Materials,NYQ,True
+IQV,IQVIA,Health Care,NYQ,True
+IR,Ingersoll Rand,Industrials,NYQ,True
+IRM,Iron Mountain,Real Estate,NYQ,True
+ISRG,Intuitive Surgical,Health Care,NMS,True
+IT,Gartner,Information Technology,NYQ,True
+ITW,Illinois Tool Works,Industrials,NYQ,True
+IVZ,Invesco,Financials,NYQ,True
+J,Jacobs Solutions,Industrials,NYQ,True
+JBHT,J.B. Hunt,Industrials,NMS,True
+JBL,Jabil,Information Technology,NYQ,True
+JCI,Johnson Controls,Industrials,NYQ,True
+JKHY,Jack Henry & Associates,Financials,NMS,True
+JNJ,Johnson & Johnson,Health Care,NYQ,True
+JPM,JPMorgan Chase,Financials,NYQ,True
+KDP,Keurig Dr Pepper,Consumer Staples,NMS,True
+KEY,KeyCorp,Financials,NYQ,True
+KEYS,Keysight Technologies,Information Technology,NYQ,True
+KHC,Kraft Heinz,Consumer Staples,NMS,True
+KIM,Kimco Realty,Real Estate,NYQ,True
+KKR,KKR & Co.,Financials,NYQ,True
+KLAC,KLA Corporation,Information Technology,NMS,True
+KMB,Kimberly-Clark,Consumer Staples,NMS,True
+KMI,Kinder Morgan,Energy,NYQ,True
+KO,Coca-Cola Company (The),Consumer Staples,NYQ,True
+KR,Kroger,Consumer Staples,NYQ,True
+KVUE,Kenvue,Consumer Staples,NYQ,True
+L,Loews Corporation,Financials,NYQ,True
+LDOS,Leidos,Industrials,NYQ,True
+LEN,Lennar,Consumer Discretionary,NYQ,True
+LH,Labcorp,Health Care,NYQ,True
+LHX,L3Harris,Industrials,NYQ,True
+LII,Lennox International,Industrials,NYQ,True
+LIN,Linde plc,Materials,NMS,True
+LITE,Lumentum,Information Technology,NMS,True
+LLY,Lilly (Eli),Health Care,NYQ,True
+LMT,Lockheed Martin,Industrials,NYQ,True
+LNT,Alliant Energy,Utilities,NMS,True
+LOW,Lowe's,Consumer Discretionary,NYQ,True
+LRCX,Lam Research,Information Technology,NMS,True
+LULU,Lululemon Athletica,Consumer Discretionary,NMS,True
+LUV,Southwest Airlines,Industrials,NYQ,True
+LVS,Las Vegas Sands,Consumer Discretionary,NYQ,True
+LYB,LyondellBasell,Materials,NYQ,True
+LYV,Live Nation Entertainment,Communication Services,NYQ,True
+MA,Mastercard,Financials,NYQ,True
+MAA,Mid-America Apartment Communities,Real Estate,NYQ,True
+MAR,Marriott International,Consumer Discretionary,NMS,True
+MAS,Masco,Industrials,NYQ,True
+MCD,McDonald's,Consumer Discretionary,NYQ,True
+MCHP,Microchip Technology,Information Technology,NMS,True
+MCK,McKesson Corporation,Health Care,NYQ,True
+MCO,Moody's Corporation,Financials,NYQ,True
+MDLZ,Mondelez International,Consumer Staples,NMS,True
+MDT,Medtronic,Health Care,NYQ,True
+MET,MetLife,Financials,NYQ,True
+META,Meta Platforms,Communication Services,NMS,True
+MGM,MGM Resorts,Consumer Discretionary,NYQ,True
+MKC,McCormick & Company,Consumer Staples,NYQ,True
+MLM,Martin Marietta Materials,Materials,NYQ,True
+MMM,3M,Industrials,NYQ,True
+MNST,Monster Beverage,Consumer Staples,NMS,True
+MO,Altria,Consumer Staples,NYQ,True
+MOS,Mosaic Company (The),Materials,NYQ,True
+MPC,Marathon Petroleum,Energy,NYQ,True
+MPWR,Monolithic Power Systems,Information Technology,NMS,True
+MRK,Merck & Co.,Health Care,NYQ,True
+MRNA,Moderna,Health Care,NMS,True
+MRSH,Marsh McLennan,Financials,NYQ,True
+MS,Morgan Stanley,Financials,NYQ,True
+MSCI,MSCI Inc.,Financials,NYQ,True
+MSFT,Microsoft,Information Technology,NMS,True
+MSI,Motorola Solutions,Information Technology,NYQ,True
+MTB,M&T Bank,Financials,NYQ,True
+MTD,Mettler Toledo,Health Care,NYQ,True
+MU,Micron Technology,Information Technology,NMS,True
+NCLH,Norwegian Cruise Line Holdings,Consumer Discretionary,NYQ,True
+NDAQ,"Nasdaq, Inc.",Financials,NMS,True
+NDSN,Nordson Corporation,Industrials,NMS,True
+NEE,NextEra Energy,Utilities,NYQ,True
+NEM,Newmont,Materials,NYQ,True
+NFLX,Netflix,Communication Services,NMS,True
+NI,NiSource,Utilities,NYQ,True
+NKE,"Nike, Inc.",Consumer Discretionary,NYQ,True
+NOC,Northrop Grumman,Industrials,NYQ,True
+NOW,ServiceNow,Information Technology,NYQ,True
+NRG,NRG Energy,Utilities,NYQ,True
+NSC,Norfolk Southern,Industrials,NYQ,True
+NTAP,NetApp,Information Technology,NMS,True
+NTRS,Northern Trust,Financials,NMS,True
+NUE,Nucor,Materials,NYQ,True
+NVDA,Nvidia,Information Technology,NMS,True
+NVR,"NVR, Inc.",Consumer Discretionary,NYQ,True
+NWS,News Corp (Class B),Communication Services,NMS,True
+NWSA,News Corp (Class A),Communication Services,NMS,True
+NXPI,NXP Semiconductors,Information Technology,NMS,True
+O,Realty Income,Real Estate,NYQ,True
+ODFL,Old Dominion,Industrials,NMS,True
+OKE,Oneok,Energy,NYQ,True
+OMC,Omnicom Group,Communication Services,NYQ,True
+ON,ON Semiconductor,Information Technology,NMS,True
+ORCL,Oracle Corporation,Information Technology,NYQ,True
+ORLY,O’Reilly Automotive,Consumer Discretionary,NMS,True
+OTIS,Otis Worldwide,Industrials,NYQ,True
+OXY,Occidental Petroleum,Energy,NYQ,True
+PANW,Palo Alto Networks,Information Technology,NMS,True
+PAYX,Paychex,Industrials,NMS,True
+PCAR,Paccar,Industrials,NMS,True
+PCG,PG&E Corporation,Utilities,NYQ,True
+PEG,Public Service Enterprise Group,Utilities,NYQ,True
+PEP,PepsiCo,Consumer Staples,NMS,True
+PFE,Pfizer,Health Care,NYQ,True
+PFG,Principal Financial Group,Financials,NMS,True
+PG,Procter & Gamble,Consumer Staples,NYQ,True
+PGR,Progressive Corporation,Financials,NYQ,True
+PH,Parker Hannifin,Industrials,NYQ,True
+PHM,PulteGroup,Consumer Discretionary,NYQ,True
+PKG,Packaging Corporation of America,Materials,NYQ,True
+PLD,Prologis,Real Estate,NYQ,True
+PLTR,Palantir Technologies,Information Technology,NMS,True
+PM,Philip Morris International,Consumer Staples,NYQ,True
+PNC,PNC Financial Services,Financials,NYQ,True
+PNR,Pentair,Industrials,NYQ,True
+PNW,Pinnacle West Capital,Utilities,NYQ,True
+PODD,Insulet Corporation,Health Care,NMS,True
+POOL,Pool Corporation,Consumer Discretionary,NMS,True
+PPG,PPG Industries,Materials,NYQ,True
+PPL,PPL Corporation,Utilities,NYQ,True
+PRU,Prudential Financial,Financials,NYQ,True
+PSA,Public Storage,Real Estate,NYQ,True
+PSKY,Paramount Skydance Corporation,Communication Services,NMS,True
+PSX,Phillips 66,Energy,NYQ,True
+PTC,PTC Inc.,Information Technology,NMS,True
+PWR,Quanta Services,Industrials,NYQ,True
+PYPL,PayPal,Financials,NMS,True
+Q,Qnity Electronics,Information Technology,NYQ,True
+QCOM,Qualcomm,Information Technology,NMS,True
+RCL,Royal Caribbean Group,Consumer Discretionary,NYQ,True
+REG,Regency Centers,Real Estate,NMS,True
+REGN,Regeneron Pharmaceuticals,Health Care,NMS,True
+RF,Regions Financial Corporation,Financials,NYQ,True
+RJF,Raymond James Financial,Financials,NYQ,True
+RL,Ralph Lauren Corporation,Consumer Discretionary,NYQ,True
+RMD,ResMed,Health Care,NYQ,True
+ROK,Rockwell Automation,Industrials,NYQ,True
+ROL,"Rollins, Inc.",Industrials,NYQ,True
+ROP,Roper Technologies,Information Technology,NMS,True
+ROST,Ross Stores,Consumer Discretionary,NMS,True
+RSG,Republic Services,Industrials,NYQ,True
+RTX,RTX Corporation,Industrials,NYQ,True
+RVTY,Revvity,Health Care,NYQ,True
+SATS,EchoStar,Communication Services,NMS,True
+SBAC,SBA Communications,Real Estate,NMS,True
+SBUX,Starbucks,Consumer Discretionary,NMS,True
+SCHW,Charles Schwab Corporation,Financials,NYQ,True
+SHW,Sherwin-Williams,Materials,NYQ,True
+SJM,J.M. Smucker Company (The),Consumer Staples,NYQ,True
+SLB,Schlumberger,Energy,NYQ,True
+SMCI,Supermicro,Information Technology,NMS,True
+SNA,Snap-on,Industrials,NYQ,True
+SNDK,Sandisk,Information Technology,NMS,True
+SNPS,Synopsys,Information Technology,NMS,True
+SO,Southern Company,Utilities,NYQ,True
+SOLV,Solventum,Health Care,NYQ,True
+SPG,Simon Property Group,Real Estate,NYQ,True
+SPGI,S&P Global,Financials,NYQ,True
+SRE,Sempra,Utilities,NYQ,True
+STE,Steris,Health Care,NYQ,True
+STLD,Steel Dynamics,Materials,NMS,True
+STT,State Street Corporation,Financials,NYQ,True
+STX,Seagate Technology,Information Technology,NMS,True
+STZ,Constellation Brands,Consumer Staples,NYQ,True
+SW,Smurfit Westrock,Materials,NYQ,True
+SWK,Stanley Black & Decker,Industrials,NYQ,True
+SWKS,Skyworks Solutions,Information Technology,NMS,True
+SYF,Synchrony Financial,Financials,NYQ,True
+SYK,Stryker Corporation,Health Care,NYQ,True
+SYY,Sysco,Consumer Staples,NYQ,True
+T,AT&T,Communication Services,NYQ,True
+TAP,Molson Coors Beverage Company,Consumer Staples,NYQ,True
+TDG,TransDigm Group,Industrials,NYQ,True
+TDY,Teledyne Technologies,Information Technology,NYQ,True
+TECH,Bio-Techne,Health Care,NMS,True
+TEL,TE Connectivity,Information Technology,NYQ,True
+TER,Teradyne,Information Technology,NMS,True
+TFC,Truist Financial,Financials,NYQ,True
+TGT,Target Corporation,Consumer Staples,NYQ,True
+TJX,TJX Companies,Consumer Discretionary,NYQ,True
+TKO,TKO Group Holdings,Communication Services,NYQ,True
+TMO,Thermo Fisher Scientific,Health Care,NYQ,True
+TMUS,T-Mobile US,Communication Services,NMS,True
+TPL,Texas Pacific Land Corporation,Energy,NYQ,True
+TPR,"Tapestry, Inc.",Consumer Discretionary,NYQ,True
+TRGP,Targa Resources,Energy,NYQ,True
+TRMB,Trimble Inc.,Information Technology,NMS,True
+TROW,T. Rowe Price,Financials,NMS,True
+TRV,Travelers Companies (The),Financials,NYQ,True
+TSCO,Tractor Supply,Consumer Discretionary,NMS,True
+TSLA,"Tesla, Inc.",Consumer Discretionary,NMS,True
+TSN,Tyson Foods,Consumer Staples,NYQ,True
+TT,Trane Technologies,Industrials,NYQ,True
+TTD,Trade Desk (The),Communication Services,NGM,True
+TTWO,Take-Two Interactive,Communication Services,NMS,True
+TXN,Texas Instruments,Information Technology,NMS,True
+TXT,Textron,Industrials,NYQ,True
+TYL,Tyler Technologies,Information Technology,NYQ,True
+UAL,United Airlines Holdings,Industrials,NMS,True
+UBER,Uber,Industrials,NYQ,True
+UDR,"UDR, Inc.",Real Estate,NYQ,True
+UHS,Universal Health Services,Health Care,NYQ,True
+ULTA,Ulta Beauty,Consumer Discretionary,NMS,True
+UNH,UnitedHealth Group,Health Care,NYQ,True
+UNP,Union Pacific Corporation,Industrials,NYQ,True
+UPS,United Parcel Service,Industrials,NYQ,True
+URI,United Rentals,Industrials,NYQ,True
+USB,U.S. Bancorp,Financials,NYQ,True
+V,Visa Inc.,Financials,NYQ,True
+VEEV,Veeva Systems,Health Care,NYQ,True
+VICI,Vici Properties,Real Estate,NYQ,True
+VLO,Valero Energy,Energy,NYQ,True
+VLTO,Veralto,Industrials,NYQ,True
+VMC,Vulcan Materials Company,Materials,NYQ,True
+VRSK,Verisk Analytics,Industrials,NMS,True
+VRSN,Verisign,Information Technology,NMS,True
+VRT,Vertiv,Industrials,NYQ,True
+VRTX,Vertex Pharmaceuticals,Health Care,NMS,True
+VST,Vistra Corp.,Utilities,NYQ,True
+VTR,Ventas,Real Estate,NYQ,True
+VTRS,Viatris,Health Care,NMS,True
+VZ,Verizon,Communication Services,NYQ,True
+WAB,Wabtec,Industrials,NYQ,True
+WAT,Waters Corporation,Health Care,NYQ,True
+WBD,Warner Bros. Discovery,Communication Services,NMS,True
+WDAY,"Workday, Inc.",Information Technology,NMS,True
+WDC,Western Digital,Information Technology,NMS,True
+WEC,WEC Energy Group,Utilities,NYQ,True
+WELL,Welltower,Real Estate,NYQ,True
+WFC,Wells Fargo,Financials,NYQ,True
+WM,Waste Management,Industrials,NYQ,True
+WMB,Williams Companies,Energy,NYQ,True
+WMT,Walmart,Consumer Staples,NMS,True
+WRB,W. R. Berkley Corporation,Financials,NYQ,True
+WSM,"Williams-Sonoma, Inc.",Consumer Discretionary,NYQ,True
+WST,West Pharmaceutical Services,Health Care,NYQ,True
+WTW,Willis Towers Watson,Financials,NMS,True
+WY,Weyerhaeuser,Real Estate,NYQ,True
+WYNN,Wynn Resorts,Consumer Discretionary,NMS,True
+XEL,Xcel Energy,Utilities,NMS,True
+XOM,ExxonMobil,Energy,NYQ,True
+XYL,Xylem Inc.,Industrials,NYQ,True
+XYZ,"Block, Inc.",Financials,NYQ,True
+YUM,Yum! Brands,Consumer Discretionary,NYQ,True
+ZBH,Zimmer Biomet,Health Care,NYQ,True
+ZBRA,Zebra Technologies,Information Technology,NMS,True
+ZTS,Zoetis,Health Care,NYQ,True

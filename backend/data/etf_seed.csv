@@ -1,0 +1,50 @@
+symbol,name,sector,exchange,is_seed
+ARKK,ARK Innovation ETF,Industry ETF - Innovation,BTS,True
+BND,Vanguard Total Bond Market ETF,Bond - Broad,NGM,True
+BTC-USD,Bitcoin USD,Crypto - Bitcoin,CCC,True
+CPER,United States Copper Index Fund,Commodity - Copper,PCX,True
+DBA,Invesco DB Agriculture Fund,Commodity - Agriculture,PCX,True
+DBC,Invesco DB Commodity Index Tracking,Commodity - Broad Basket,PCX,True
+DIA,SPDR Dow Jones Industrial Average ETF,Broad Market,PCX,True
+EEM,iShares MSCI Emerging Markets ETF,International - Emerging,PCX,True
+EFA,iShares MSCI EAFE ETF,International - Developed,PCX,True
+ETH-USD,Ethereum USD,Crypto - Ethereum,CCC,True
+EWJ,iShares MSCI Japan ETF,International - Japan,PCX,True
+FXI,iShares China Large-Cap ETF,International - China,PCX,True
+GLD,SPDR Gold Shares,Commodity - Gold,PCX,True
+HYG,iShares iBoxx High Yield Corporate Bond ETF,Bond - High Yield,PCX,True
+IEF,iShares 7-10 Year Treasury Bond ETF,Bond - Intermediate Treasury,NGM,True
+ITB,iShares U.S. Home Construction ETF,Industry ETF - Homebuilders,BTS,True
+IWM,iShares Russell 2000 ETF,Broad Market,PCX,True
+KRE,SPDR S&P Regional Banking ETF,Industry ETF - Regional Banks,PCX,True
+LQD,iShares iBoxx Investment Grade Corporate Bond ETF,Bond - Investment Grade,PCX,True
+QQQ,Invesco QQQ Trust,Broad Market,NGM,True
+SHY,iShares 1-3 Year Treasury Bond ETF,Bond - Short Treasury,NGM,True
+SLV,iShares Silver Trust,Commodity - Silver,PCX,True
+SMH,VanEck Semiconductor ETF,Industry ETF - Semiconductors,NGM,True
+SPY,SPDR S&P 500 ETF Trust,Broad Market,PCX,True
+SQQQ,ProShares UltraPro Short QQQ,Leveraged - -3x QQQ,NGM,True
+TIP,iShares TIPS Bond ETF,Bond - TIPS,PCX,True
+TLT,iShares 20+ Year Treasury Bond ETF,Bond - Long Treasury,NGM,True
+TQQQ,ProShares UltraPro QQQ,Leveraged - 3x QQQ,NGM,True
+UNG,United States Natural Gas Fund,Commodity - Natural Gas,PCX,True
+UPRO,ProShares UltraPro S&P 500,Leveraged - 3x SPY,PCX,True
+USO,United States Oil Fund,Commodity - Crude Oil,PCX,True
+VIXY,ProShares VIX Short-Term Futures ETF,Volatility,BTS,True
+VOO,Vanguard S&P 500 ETF,Broad Market,PCX,True
+VTI,Vanguard Total Stock Market ETF,Broad Market,PCX,True
+VXUS,Vanguard Total International Stock ETF,International - Broad ex-US,NGM,True
+XBI,SPDR S&P Biotech ETF,Industry ETF - Biotech,PCX,True
+XLB,Materials Select Sector SPDR,Sector ETF - Materials,PCX,True
+XLC,Communication Services Select Sector SPDR,Sector ETF - Communications,PCX,True
+XLE,Energy Select Sector SPDR,Sector ETF - Energy,PCX,True
+XLF,Financial Select Sector SPDR,Sector ETF - Financials,PCX,True
+XLI,Industrial Select Sector SPDR,Sector ETF - Industrials,PCX,True
+XLK,Technology Select Sector SPDR,Sector ETF - Technology,PCX,True
+XLP,Consumer Staples Select Sector SPDR,Sector ETF - Staples,PCX,True
+XLRE,Real Estate Select Sector SPDR,Sector ETF - Real Estate,PCX,True
+XLU,Utilities Select Sector SPDR,Sector ETF - Utilities,PCX,True
+XLV,Health Care Select Sector SPDR,Sector ETF - Healthcare,PCX,True
+XLY,Consumer Discretionary Select Sector SPDR,Sector ETF - Discretionary,PCX,True
+XOP,SPDR S&P Oil & Gas E&P ETF,Industry ETF - Oil & Gas E&P,PCX,True
+XRT,SPDR S&P Retail ETF,Industry ETF - Retail,PCX,True
