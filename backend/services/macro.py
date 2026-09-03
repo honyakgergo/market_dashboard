@@ -135,7 +135,7 @@ except Exception:
     pass
 
 from services.data import _load_from_cache
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # FRED series IDs
 _FRED = {
@@ -162,28 +162,134 @@ def _fred():
 
 
 def fred_status() -> str:
-    """Human-readable diagnostic for the startup log."""
+    """Human-readable diagnostic for the startup log.
+
+    Actually exercises the API rather than just checking that a key exists — a
+    key can be present and every call still fail (see _fred_http on the Windows
+    certificate-store problem), and a startup line saying "key loaded" while
+    every FRED panel is silently blank is worse than no line at all.
+    """
     key = os.getenv("FRED_API_KEY")
     if not key or key == "your_fred_api_key_here":
         return "key NOT found in environment (.env not loaded or var unset)"
+    probe = fetch_fred_series("DFII10", years=1)
+    if probe is None or not len(probe):
+        return f"key loaded (…{key[-4:]}) but the API call FAILED — {fred_last_error()}"
+    return f"key loaded and working ✓ (…{key[-4:]}, DFII10 last {probe.index[-1].date()})"
+
+
+_fred_series_cache: dict = {}
+_FRED_SERIES_TTL = 6 * 3600
+_fred_last_error: str | None = None
+
+FRED_API = "https://api.stlouisfed.org/fred/series/observations"
+
+
+def fred_last_error() -> str | None:
+    """Why the most recent FRED fetch failed, if it did. Surfaced to the UI so a
+    dead FRED panel says what is actually wrong instead of guessing."""
+    return _fred_last_error
+
+
+def _fred_http(series_id: str, start: str):
+    """Fetch a FRED series over HTTPS with `requests`.
+
+    Deliberately NOT via fredapi. fredapi calls urllib's `urlopen`, which on
+    Windows builds verifies against the system certificate store — and a single
+    malformed certificate in that store makes every call die with
+    `SSLError [ASN1: NOT_ENOUGH_DATA]`, no matter how valid the API key is.
+    `requests` verifies against certifi's bundled CA file instead, which is why
+    yfinance keeps working in exactly the environments where fredapi does not.
+
+    Returns a pandas Series, or None (with the reason recorded in
+    _fred_last_error).
+    """
+    global _fred_last_error
+    import pandas as pd
+
+    key = os.getenv("FRED_API_KEY")
+    if not key or key == "your_fred_api_key_here":
+        _fred_last_error = "no FRED_API_KEY in backend/.env"
+        return None
     try:
-        import fredapi  # noqa: F401
+        import requests
     except Exception:
-        return "key found but 'fredapi' is not installed (pip install fredapi)"
-    return f"key loaded ✓ (…{key[-4:]})"
+        _fred_last_error = "the `requests` package is not installed"
+        return None
+
+    try:
+        r = requests.get(FRED_API, timeout=20, params={
+            "series_id": series_id, "api_key": key, "file_type": "json",
+            "observation_start": start,
+        })
+        if r.status_code != 200:
+            _fred_last_error = f"FRED returned HTTP {r.status_code} for {series_id}"
+            return None
+        obs = r.json().get("observations") or []
+    except Exception as e:
+        _fred_last_error = f"{type(e).__name__}: {e}"
+        return None
+
+    rows = [(o["date"], float(o["value"])) for o in obs if o.get("value") not in (None, ".", "")]
+    if not rows:
+        _fred_last_error = f"FRED returned no usable observations for {series_id}"
+        return None
+
+    s = pd.Series([v for _, v in rows], index=pd.to_datetime([d for d, _ in rows]))
+    _fred_last_error = None
+    return s
+
+
+def fetch_fred_series(series_id: str, years: int = 5):
+    """Full FRED series as a pandas Series, memoized for six hours.
+
+    FRED daily series update once a day at most and several dashboard surfaces
+    want the same real-yield / breakeven history. Returns None when FRED is
+    unavailable, so every FRED-backed panel must treat its data as optional —
+    call fred_last_error() to tell the user why.
+    """
+    key = f"{series_id}:{years}"
+    hit = _fred_series_cache.get(key)
+    if hit and time.time() - hit["ts"] < _FRED_SERIES_TTL:
+        return hit["series"]
+
+    start = (datetime.now() - timedelta(days=int(years * 366))).strftime("%Y-%m-%d")
+    s = _fred_http(series_id, start)
+
+    # Last resort: if the HTTP path failed for some non-SSL reason, fredapi may
+    # still work (e.g. behind a proxy that only it is configured for).
+    if s is None:
+        fred = _fred()
+        if fred is not None:
+            try:
+                import pandas as pd
+                raw = fred.get_series(series_id, observation_start=start)
+                if raw is not None and len(raw):
+                    s = pd.Series(raw).dropna().astype(float)
+                    s.index = pd.to_datetime(s.index)
+            except Exception:
+                s = None
+
+    _fred_series_cache[key] = {"ts": time.time(), "series": s}
+    return s
 
 
 def _series(fred, sid):
-    """Return (latest, value ~21 obs ago) for a FRED series, or (None, None)."""
-    try:
-        s = fred.get_series(sid).dropna()
-        if s.empty:
-            return None, None
-        latest = float(s.iloc[-1])
-        prev = float(s.iloc[-22]) if len(s) > 22 else None
-        return latest, prev
-    except Exception:
+    """Return (latest, value ~21 obs ago) for a FRED series, or (None, None).
+
+    `fred` is accepted for call-compatibility but no longer used: everything
+    routes through fetch_fred_series so the whole app shares one cache and one
+    working transport.
+    """
+    s = fetch_fred_series(sid, years=3)
+    if s is None or not len(s):
         return None, None
+    s = s.dropna()
+    if s.empty:
+        return None, None
+    latest = float(s.iloc[-1])
+    prev = float(s.iloc[-22]) if len(s) > 22 else None
+    return latest, prev
 
 
 def _vix_complex():
@@ -214,10 +320,18 @@ def build_macro_extended(force: bool = False) -> dict:
     if not force and _ext_cache["data"] and (now - _ext_cache["ts"] < _EXT_TTL):
         return _ext_cache["data"]
 
-    fred = _fred()
-    fred_block = {"available": fred is not None}
+    # Availability is decided by whether a real fetch SUCCEEDS, not by whether a
+    # fredapi client could be constructed. Those are different questions: a key
+    # can be present and every call still fail (see _fred_http), which used to
+    # leave this block reporting available=True over a wall of nulls.
+    probe = fetch_fred_series(_FRED["real_yield_10y"], years=3)
+    ok = probe is not None and len(probe) > 0
+    fred_block = {"available": ok}
+    if not ok:
+        fred_block["reason"] = fred_last_error() or "FRED returned no data"
     net_liq = None
-    if fred is not None:
+    if ok:
+        fred = None                                              # kept for _series' signature
         ry, ry_p = _series(fred, _FRED["real_yield_10y"])
         be, be_p = _series(fred, _FRED["breakeven_10y"])
         assets, assets_p = _series(fred, _FRED["fed_assets"])   # $ millions
@@ -240,26 +354,34 @@ def build_macro_extended(force: bool = False) -> dict:
             "net_liquidity_chg_bn": round(net_liq - net_liq_prev, 1) if (net_liq and net_liq_prev) else None,
         })
 
-        # short histories for the trend sparklines
+        # Short histories for the trend sparklines. These go through
+        # fetch_fred_series like everything else — calling fred.get_series here
+        # was why the sparklines stayed null even once the numbers appeared.
         def _hist(sid, n=180):
-            try:
-                s = fred.get_series(sid).dropna().iloc[-n:]
-                return {"dates": [str(d.date()) for d in s.index],
-                        "values": [round(float(v), 3) for v in s.values]}
-            except Exception:
+            s = fetch_fred_series(sid, years=3)
+            if s is None or not len(s):
                 return None
+            s = s.dropna().iloc[-n:]
+            return {"dates": [str(d.date()) for d in s.index],
+                    "values": [round(float(v), 3) for v in s.values]}
         fred_block["real_yield_series"] = _hist(_FRED["real_yield_10y"])
         fred_block["breakeven_series"] = _hist(_FRED["breakeven_10y"])
         try:
             import pandas as _pd
-            nl = _pd.concat([
-                fred.get_series(_FRED["fed_assets"]).rename("a"),
-                fred.get_series(_FRED["tga"]).rename("t"),
-                fred.get_series(_FRED["rrp"]).rename("r"),
-            ], axis=1).ffill().dropna()
-            nls = ((nl["a"] - nl["t"] - nl["r"]) / 1000).iloc[-180:]
-            fred_block["net_liquidity_series"] = {"dates": [str(d.date()) for d in nls.index],
-                                                  "values": [round(float(v), 1) for v in nls.values]}
+            legs = {k: fetch_fred_series(_FRED[k], years=3)
+                    for k in ("fed_assets", "tga", "rrp")}
+            if all(v is not None and len(v) for v in legs.values()):
+                nl = _pd.concat([
+                    legs["fed_assets"].rename("a"),
+                    legs["tga"].rename("t"),
+                    legs["rrp"].rename("r"),
+                ], axis=1).ffill().dropna()
+                nls = ((nl["a"] - nl["t"] - nl["r"]) / 1000).iloc[-180:]
+                fred_block["net_liquidity_series"] = {
+                    "dates": [str(d.date()) for d in nls.index],
+                    "values": [round(float(v), 1) for v in nls.values]}
+            else:
+                fred_block["net_liquidity_series"] = None
         except Exception:
             fred_block["net_liquidity_series"] = None
 

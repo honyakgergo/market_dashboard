@@ -28,9 +28,10 @@ export const useStore = create((set) => ({
   ticker: 'SPY',
   setTicker: (ticker) => set({ ticker: (ticker || '').toUpperCase() }),
 
-  // chart period for ticker detail
-  period: '1y',
-  setPeriod: (period) => set({ period }),
+  // NOTE: there is deliberately no chart-period state here any more. The daily
+  // chart loads a ticker's full history once and the period buttons only move
+  // the visible window, so the framing is local view state on the chart — not
+  // something the rest of the app needs to know about.
 
   // jump to ticker detail for a given symbol (used by search + heatmap clicks)
   openTicker: (symbol) =>

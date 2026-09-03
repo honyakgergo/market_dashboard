@@ -8,6 +8,7 @@
 # Structural history (spark lines, MA50, RRG tails) comes from the cache.
 # ============================================================
 
+import math
 import time
 from datetime import datetime, timedelta
 
@@ -44,8 +45,27 @@ RATIOS = [
     ("XLU/SPY (defensives)",    "XLU", "SPY"),
 ]
 
-RRG_MEMBERS = ["XLK", "XLF", "XLE", "XLV", "XLY", "XLP", "XLI", "XLU", "XLB", "XLRE", "XLC", "SMH", "IWM", "EEM"]
+# ── Relative Rotation Graph ───────────────────────────────────
+# Two universes, both measured against SPY. Sectors answers "where inside US
+# equity is money going"; cross-asset answers "is money in equity at all".
+RRG_UNIVERSES = {
+    "sectors": [
+        ("XLK", "Technology"), ("XLC", "Comm. Services"), ("XLY", "Cons. Disc."),
+        ("XLP", "Cons. Staples"), ("XLE", "Energy"), ("XLF", "Financials"),
+        ("XLV", "Health Care"), ("XLI", "Industrials"), ("XLB", "Materials"),
+        ("XLRE", "Real Estate"), ("XLU", "Utilities"), ("SMH", "Semis"),
+    ],
+    "cross_asset": [
+        ("QQQ", "Nasdaq 100"), ("IWM", "Russell 2000"), ("RSP", "S&P equal wt"),
+        ("EFA", "Dev ex-US"), ("EEM", "EM equity"),
+        ("TLT", "Long Treasuries"), ("IEF", "10y Treasuries"),
+        ("LQD", "IG credit"), ("HYG", "HY credit"),
+        ("GLD", "Gold"), ("SLV", "Silver"), ("USO", "Crude oil"), ("CPER", "Copper"),
+        ("UUP", "US dollar"), ("BTC-USD", "Bitcoin"),
+    ],
+}
 RRG_BENCH = "SPY"
+RRG_TAIL = 12          # weeks of tail retained per member
 
 # one representative per asset class — drives the rebased perf chart + matrices
 CROSS_ASSET = [
@@ -77,10 +97,93 @@ def _returns(close: pd.Series, live_price: float | None = None) -> dict:
 
 
 def _quadrant(ratio: float, mom: float) -> str:
+    """The four RRG quadrants, read clockwise as the normal rotation cycle:
+    improving -> leading -> weakening -> lagging -> improving."""
     if ratio >= 100 and mom >= 100: return "leading"
     if ratio < 100 and mom >= 100:  return "improving"
     if ratio < 100 and mom < 100:   return "lagging"
     return "weakening"
+
+
+def _build_rrg(members: list[tuple[str, str]], bench: pd.Series,
+               start: str, end: str, tail_len: int = RRG_TAIL) -> list[dict]:
+    """Relative Rotation Graph coordinates for one universe.
+
+    RS-Ratio  = relative strength versus the benchmark, normalised so 100 is
+                "in line with the benchmark".
+    RS-Momentum = the rate of change of RS-Ratio, normalised the same way.
+
+    Both axes are z-scored against the member's OWN two-year history before
+    being re-centred on 100. That normalisation is what makes the quadrants
+    mean something: without it every series clusters within a hair of 100 and
+    the whole chart collapses into a dot. Weekly bars, because rotation is a
+    multi-week phenomenon and daily sampling just adds noise to the tails.
+    """
+    bench_w = bench.resample("W-FRI").last().dropna()
+    if len(bench_w) < 30:
+        return []
+
+    out = []
+    for sym, name in members:
+        c = _closes(sym, start, end)
+        if c is None:
+            continue
+        cw = c.resample("W-FRI").last().reindex(bench_w.index).ffill()
+        rs = (cw / bench_w).dropna()
+        if len(rs) < 30:
+            continue
+
+        raw_ratio = 100 * rs / rs.rolling(10).mean()
+        raw_mom = 100 * raw_ratio / raw_ratio.rolling(10).mean()
+
+        def norm(s: pd.Series) -> pd.Series:
+            s = s.dropna()
+            if len(s) < 20:
+                return pd.Series(dtype=float)
+            sd = s.std()
+            if not sd or pd.isna(sd):
+                return pd.Series(dtype=float)
+            return 100 + (s - s.mean()) / sd
+
+        ratio_n, mom_n = norm(raw_ratio), norm(raw_mom)
+        if ratio_n.empty or mom_n.empty:
+            continue
+
+        tail = pd.DataFrame({"ratio": ratio_n, "mom": mom_n}).dropna().iloc[-tail_len:]
+        if len(tail) < 2:
+            continue
+
+        pts = [{"date": str(d.date()), "ratio": round(float(a), 2), "mom": round(float(b), 2)}
+               for d, a, b in zip(tail.index, tail["ratio"], tail["mom"])]
+        head = pts[-1]
+
+        # Distance from the centre = conviction. A name at (101, 101) is barely
+        # distinguishable from the benchmark; one at (105, 104) genuinely leads.
+        strength = round(math.hypot(head["ratio"] - 100, head["mom"] - 100), 2)
+        prev = pts[max(0, len(pts) - 5)]
+        heading = round(math.degrees(math.atan2(head["mom"] - prev["mom"],
+                                                head["ratio"] - prev["ratio"])), 1)
+
+        out.append({
+            "symbol": sym, "name": name, "tail": pts,
+            "ratio": head["ratio"], "mom": head["mom"],
+            "quadrant": _quadrant(head["ratio"], head["mom"]),
+            "strength": strength, "heading": heading,
+            "ret_1m": round(float(c.iloc[-1] / c.iloc[-22] - 1), 4) if len(c) > 22 else None,
+            "ret_3m": round(float(c.iloc[-1] / c.iloc[-64] - 1), 4) if len(c) > 64 else None,
+            "rel_1m": None,   # filled in below, once the benchmark's own move is known
+        })
+
+    # Relative return versus the benchmark — the plain-English version of the
+    # x-axis, so the chart can be sanity-checked against a number.
+    bench_1m = float(bench.iloc[-1] / bench.iloc[-22] - 1) if len(bench) > 22 else None
+    if bench_1m is not None:
+        for r in out:
+            if r["ret_1m"] is not None:
+                r["rel_1m"] = round(r["ret_1m"] - bench_1m, 4)
+
+    out.sort(key=lambda r: -r["strength"])
+    return out
 
 
 def _efficiency_ratio(close, window=21):
@@ -253,26 +356,12 @@ def build_etf_monitor(force: bool = False) -> dict:
             "spark": spark,
         })
 
-    # RRG — weekly, always daily-sourced (labeled daily on the client)
+    # RRG — weekly and always daily-sourced; intraday tails would be noise.
     bench = _closes(RRG_BENCH, start, end)
-    rrg = []
+    rrg = {}
     if bench is not None:
-        bench_w = bench.resample("W-FRI").last()
-        for s in RRG_MEMBERS:
-            c = _closes(s, start, end)
-            if c is None:
-                continue
-            cw = c.resample("W-FRI").last().reindex(bench_w.index, method="ffill")
-            rs = (cw / bench_w).dropna()
-            if len(rs) < 20:
-                continue
-            rs_ratio = 100 * (rs / rs.rolling(10).mean())
-            rs_mom = 100 + rs_ratio.pct_change(periods=4) * 100
-            tail = pd.DataFrame({"ratio": rs_ratio, "mom": rs_mom}).dropna().iloc[-8:]
-            if tail.empty:
-                continue
-            pts = [{"ratio": round(float(a), 2), "mom": round(float(b), 2)} for a, b in zip(tail["ratio"], tail["mom"])]
-            rrg.append({"symbol": s, "tail": pts, "quadrant": _quadrant(pts[-1]["ratio"], pts[-1]["mom"])})
+        for uni, members in RRG_UNIVERSES.items():
+            rrg[uni] = _build_rrg(members, bench, start, end)
 
     # trending vs reverting — Efficiency Ratio (multi-week; stays daily)
     states = {"trending": [], "reverting": [], "neutral": []}
@@ -311,7 +400,7 @@ def build_etf_monitor(force: bool = False) -> dict:
         "as_of": sess["now_cet"] + " CET" if live else end,
         "states": states, "risk_appetite": risk_appetite,
         "asset_map": asset_map, "ratios": ratios,
-        "rrg": rrg, "benchmark": RRG_BENCH,
+        "rrg": rrg, "benchmark": RRG_BENCH, "rrg_tail_weeks": RRG_TAIL,
         "cross_asset": bundle,
     }
     _cache[key] = {"ts": now, "data": data}

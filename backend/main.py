@@ -28,7 +28,7 @@ from services.etf_monitor import build_etf_monitor
 from services.intraday import fetch_intraday
 from services.options import build_options
 from services.session import market_session
-from services.volatility import build_volatility, probe as vol_probe
+from services.volatility import build_volatility, build_single_name_vol, probe as vol_probe
 from services.europe import build_europe
 from services.commodities import build_commodities
 from services.cot import build_cot
@@ -239,6 +239,7 @@ def purge_all_cache():
     global _macro_cache, _signals_cache
     with sqlite3.connect(DB_PATH) as conn:
         conn.execute("DELETE FROM ohlcv")
+        conn.execute("DELETE FROM ohlcv_reach")
         conn.commit()
     _macro_cache = {}
     _signals_cache = None
@@ -342,6 +343,17 @@ def vol(force: bool = False):
 @app.get("/vol/probe")
 def vol_probe_endpoint(force: bool = False):
     return vol_probe(force=force)
+
+
+@app.get("/vol/single-name")
+def vol_single_name(force: bool = False):
+    """Single-name implied vol vs the index (the dispersion question).
+
+    Separate from /vol because it needs one option chain per basket name and so
+    takes seconds, not milliseconds — the Volatility page loads its main payload
+    first and fills this panel in when it arrives. 30-minute TTL.
+    """
+    return build_single_name_vol(force=force)
 
 
 # ── Europe (EU indices / VSTOXX / EURUSD / overlap) ─────────────

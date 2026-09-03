@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Set-Location \"C:\\\\Users\\\\honya\\\\Documents\\\\money_dashboard\\\\backend\"; $py = \\(Get-Command python, python3, py -ErrorAction SilentlyContinue | Select-Object -First 1\\); if \\($py\\) { Write-Output \"found: $\\($py.Source\\)\"; & $py.Source --version } else { Write-Output \"no python on PATH\" })",
+      "PowerShell(& \"C:\\\\ProgramData\\\\anaconda3\\\\Scripts\\\\conda.exe\" env list 2>$null; Write-Output \"--- envs dir ---\"; Get-ChildItem \"$env:USERPROFILE\\\\.conda\\\\envs\" -Directory -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName; Get-ChildItem \"C:\\\\ProgramData\\\\anaconda3\\\\envs\" -Directory -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName)",
+      "PowerShell($py = \"C:\\\\Users\\\\honya\\\\.conda\\\\envs\\\\swinglab\\\\python.exe\"; if \\(Test-Path $py\\) { & $py -c \"import fastapi, yfinance, pandas, numpy, uvicorn, pydantic; print\\('swinglab env OK'\\); import fredapi; print\\('fredapi ok'\\)\" })",
+      "PowerShell($py = \"C:\\\\Users\\\\honya\\\\.conda\\\\envs\\\\swinglab\\\\python.exe\"; Set-Location \"C:\\\\Users\\\\honya\\\\Documents\\\\money_dashboard\\\\backend\"; & $py \"C:\\\\Users\\\\honya\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-honya-Documents-money-dashboard\\\\2d307cf7-19c8-4254-bdb3-5f443d0bd1f8\\\\scratchpad\\\\import_check.py\")",
+      "Bash(npx playwright *)",
+      "Bash(npm ls *)"
+    ]
+  }
+}

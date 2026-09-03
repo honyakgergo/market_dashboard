@@ -302,11 +302,15 @@ def build_overview(force: bool = False) -> dict:
     ]
     sector_list.sort(key=lambda x: x["avg_1d"], reverse=True)
 
+    # Sort on the raw value with an explicit `is not None` guard so a move of
+    # EXACTLY 0 keeps its true place (between the last gainer and the first
+    # loser) instead of being coerced to a sentinel and pushed to one end.
     by_1d = sorted([r for r in rows if r["ret_1d"] is not None], key=lambda r: r["ret_1d"])
     movers = {
         "gainers": list(reversed(by_1d[-12:])),
         "losers": by_1d[:12],
-        "unusual_volume": sorted([r for r in rows if r["vol_ratio"]], key=lambda r: r["vol_ratio"], reverse=True)[:12],
+        "unusual_volume": sorted([r for r in rows if r["vol_ratio"] is not None],
+                                 key=lambda r: r["vol_ratio"], reverse=True)[:12],
         "crosses": [r for r in rows if r["cross"]],
     }
 

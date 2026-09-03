@@ -1,8 +1,14 @@
 // ============================================================
 // pages/EtfMonitor.jsx  — Cross-Asset
-//   Row 1: rebased performance (base 100) + rolling-correlation, side by side
+//   Row 1: ROTATION (Relative Rotation Graph) + rolling correlation
 //   Row 2: return matrix + risk-appetite / trending-reverting sidebar
-// Fits one screen; thicker lines + more gridlines for readability.
+//
+// The hero panel is the RRG, not a rebased-to-100 line chart. Rebasing tells
+// you what already happened and does it worse the more series you add — a
+// dozen overlapping lines that all start at the same point. The RRG answers
+// the question you actually open this page for: what is money rotating INTO,
+// what is it rotating OUT of, and how fast. The rebased view is still one
+// click away for when you want the literal path.
 // ============================================================
 
 import React, { useEffect, useRef, useState } from 'react'
@@ -10,6 +16,7 @@ import Plotly from 'plotly.js-dist-min'
 import { fetchEtfMonitor } from '../api/client'
 import { useStore } from '../store/useStore'
 import { useFetch, StateView, Panel, Pill, fmtPct, useSession, useAutoRefresh, SessionBanner } from '../components/ui'
+import RRG from '../components/RRG'
 
 const TF = { '1D': 1, '1W': 5, '1M': 21, '3M': 63, '6M': 126, YTD: null, '1Y': 252 }
 const TF_KEYS = ['1D', '1W', '1M', '3M', '6M', 'YTD', '1Y']
@@ -30,8 +37,11 @@ export default function EtfMonitor() {
   const openTicker = useStore((s) => s.openTicker)
   const [tf, setTf] = useState('3M')
   const [mode, setMode] = useState('pct')
+  const [view, setView] = useState('rotation')          // rotation | perf
+  const [uni, setUni] = useState('cross_asset')         // which RRG universe
 
   const ca = data?.cross_asset
+  const rrgRows = data?.rrg?.[uni] || []
 
   return (
     <div style={{ height: '100%', overflowY: 'auto' }}>
@@ -40,15 +50,35 @@ export default function EtfMonitor() {
         <StateView loading={loading} error={error} empty={!loading && !error && !data}>
           {data && (
             <>
-              {/* row 1: performance + correlation */}
+              {/* row 1: rotation (hero) + correlation */}
               <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 10 }}>
                 <Panel
-                  title={mode === 'z' ? 'Cross-asset performance · z-score (σ from mean)' : 'Cross-asset performance · rebased to 100'}
-                  right={<div style={{ display: 'flex', gap: 12, alignItems: 'center' }}><NormToggle mode={mode} setMode={setMode} /><TfToggle tf={tf} setTf={setTf} /></div>}
-                  bodyStyle={{ padding: 6 }}
+                  title={view === 'rotation'
+                    ? `Rotation · ${uni === 'sectors' ? 'US sectors' : 'cross-asset'} vs ${data.benchmark || 'SPY'}`
+                    : (mode === 'z' ? 'Cross-asset performance · z-score (σ from mean)' : 'Cross-asset performance · rebased to 100')}
+                  right={
+                    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                      {view === 'rotation' ? (
+                        <Seg value={uni} onChange={setUni}
+                             options={[['cross_asset', 'Cross-asset'], ['sectors', 'Sectors']]} />
+                      ) : (
+                        <>
+                          <NormToggle mode={mode} setMode={setMode} />
+                          <TfToggle tf={tf} setTf={setTf} />
+                        </>
+                      )}
+                      <Seg value={view} onChange={setView}
+                           options={[['rotation', 'Rotation'], ['perf', 'Rebased']]} />
+                    </div>
+                  }
+                  bodyStyle={{ padding: view === 'rotation' ? 10 : 6 }}
                 >
-                  {ca ? <PerfChart bundle={ca} tf={tf} mode={mode} onPick={openTicker} />
-                      : <Note msg="cross-asset bundle unavailable — restart backend" />}
+                  {view === 'rotation' ? (
+                    <RRG rows={rrgRows} benchmark={data.benchmark || 'SPY'}
+                         tailWeeks={data.rrg_tail_weeks || 12} onPick={openTicker} />
+                  ) : ca ? (
+                    <PerfChart bundle={ca} tf={tf} mode={mode} onPick={openTicker} />
+                  ) : <Note msg="cross-asset bundle unavailable — restart backend" />}
                 </Panel>
 
                 <Panel title={`Rolling correlation · ${ca?.corr_matrix?.window ?? ''}d`} bodyStyle={{ padding: 8 }}>
@@ -74,6 +104,23 @@ export default function EtfMonitor() {
           )}
         </StateView>
       </div>
+    </div>
+  )
+}
+
+// Small segmented control used for the rotation/rebased and universe switches.
+function Seg({ value, onChange, options }) {
+  return (
+    <div style={{ display: 'flex', gap: 3 }}>
+      {options.map(([k, l]) => (
+        <button key={k} onClick={() => onChange(k)} className="num"
+          style={{
+            padding: '3px 9px', borderRadius: 4, fontSize: 11,
+            background: k === value ? 'var(--elevated)' : 'transparent',
+            color: k === value ? 'var(--text)' : 'var(--text-muted)',
+            border: `1px solid ${k === value ? 'var(--border-strong)' : 'transparent'}`,
+          }}>{l}</button>
+      ))}
     </div>
   )
 }

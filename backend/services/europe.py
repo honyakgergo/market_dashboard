@@ -15,13 +15,12 @@
 
 import time
 import threading
-from datetime import datetime, timedelta
 
 import numpy as np
 import pandas as pd
 import yfinance as yf
 
-from services.data import _yf_lock, _load_from_cache
+from services.data import _yf_lock, daily_close_series
 from services.session import market_session
 
 EU_INDICES = [
@@ -51,29 +50,20 @@ _lock = threading.Lock()
 
 
 def _daily(ticker: str):
+    """Daily closes, memoized for an hour.
+
+    Delegates to `daily_close_series`, which only trusts the SQLite cache when
+    its newest bar is actually recent. That is what keeps the sector board
+    current: EU sector ETFs are not in the warm universe, so a symbol that got
+    cached once by an unrelated ticker lookup used to be served from that old
+    snapshot indefinitely while its never-cached siblings fetched live data —
+    the "only Banks is up to date" symptom.
+    """
     now = time.time()
     c = _series_cache.get(ticker)
     if c and now - c["ts"] < _SERIES_TTL:
         return c["series"]
-    s = None
-    end = datetime.now().strftime("%Y-%m-%d")
-    start = (datetime.now() - timedelta(days=420)).strftime("%Y-%m-%d")
-    df = _load_from_cache(ticker, start, end)
-    if df is not None and len(df) > 20:
-        s = df["Close"].astype(float)
-    else:
-        acquired = _yf_lock.acquire(timeout=20)
-        if acquired:
-            try:
-                raw = yf.download(ticker, period="1y", interval="1d", auto_adjust=True, progress=False, threads=False)
-                if raw is not None and not raw.empty:
-                    if isinstance(raw.columns, pd.MultiIndex):
-                        raw.columns = raw.columns.get_level_values(0)
-                    s = raw["Close"].astype(float).dropna()
-            except Exception:
-                s = None
-            finally:
-                _yf_lock.release()
+    s = daily_close_series(ticker, days=420)
     _series_cache[ticker] = {"ts": now, "series": s}
     return s
 
@@ -179,7 +169,11 @@ def _eu_sectors() -> list[dict]:
     """Full daily series per resolving sector ETF (dates + closes). Rebasing and
     window returns are computed client-side so the period tabs (1D…1Y) switch
     instantly without a refetch. Only tickers that actually return data are
-    included."""
+    included.
+
+    Each row carries its own `as_of` (the date of its last bar) so a sector
+    lagging the rest of the board is visible in the UI instead of silent.
+    """
     out = []
     for sym in EU_SECTORS:
         s = _daily(sym)
@@ -190,7 +184,14 @@ def _eu_sectors() -> list[dict]:
             "dates": [str(d.date()) for d in s.index],
             "closes": [round(float(v), 4) for v in s.values],
             "last": round(float(s.iloc[-1]), 2),
+            "as_of": str(s.index[-1].date()),
         })
+    # Flag any sector whose last bar trails the freshest one on the board — that
+    # is exactly the condition that used to go unnoticed.
+    if out:
+        newest = max(r["as_of"] for r in out)
+        for r in out:
+            r["stale"] = r["as_of"] < newest
     return out
 
 
@@ -205,6 +206,11 @@ def build_europe(force: bool = False) -> dict:
         cached = _out_cache.get(key)
         if not force and cached and now - cached["ts"] < ttl:
             return cached["data"]
+
+        # An explicit force must also bypass the hour-long per-symbol series memo,
+        # otherwise "refresh" returns the same stale sectors it was asked to replace.
+        if force:
+            _series_cache.clear()
 
         indices = [d for d in (_index_data(n, s, live) for n, s in EU_INDICES) if d]
         vol_gauge = _eu_vol_gauge()

@@ -111,7 +111,7 @@ export default function Europe() {
                 <Panel title="EU sectors · rebased to window start"
                   right={<div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <PeriodTabs value={secPeriod} onChange={setSecPeriod} />
-                    <span className="lbl-dim">iShares STOXX 600</span>
+                    <SectorFreshness sectors={data.sectors} />
                   </div>}
                   bodyStyle={{ padding: 6 }}>
                   <SectorChart sectors={sectors} />
@@ -131,12 +131,31 @@ export default function Europe() {
   )
 }
 
+// Shows the sector board's data date, and calls out any sector whose last bar
+// trails the rest. Sector ETFs are fetched per symbol, so one lagging behind
+// the others is a real failure mode — worth surfacing rather than letting it
+// look like a flat market.
+function SectorFreshness({ sectors }) {
+  if (!sectors?.length) return <span className="lbl-dim">iShares STOXX 600</span>
+  const dates = sectors.map((s) => s.as_of).filter(Boolean)
+  const newest = dates.length ? dates.reduce((a, b) => (a > b ? a : b)) : null
+  const stale = sectors.filter((s) => s.stale)
+  return (
+    <span className="lbl-dim" title={stale.length ? `Behind: ${stale.map((s) => s.name).join(', ')}` : 'All sectors on the same bar'}>
+      iShares STOXX 600 · {newest || '—'}
+      {stale.length > 0 && (
+        <span style={{ color: 'var(--side)', marginLeft: 6 }}>{stale.length} behind</span>
+      )}
+    </span>
+  )
+}
+
 // ── EU sector rebased curves ─────────────────────────────────
 function SectorChart({ sectors }) {
   const ref = useRef(null)
   useEffect(() => {
     if (!ref.current || !sectors?.length) return
-    const traces = sectors.map((s, k) => ({
+    const traces = sectors.map((s) => ({
       type: 'scatter', mode: 'lines', name: s.name, x: s.dates, y: s.perf,
       line: { color: sectorColor(s.symbol), width: 1.9 },
       hovertemplate: `${s.name}  %{y:+.2f}%<extra></extra>`,

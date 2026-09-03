@@ -24,6 +24,10 @@ function heatColor(ret, scale = 0.04) {
 
 const UNIVERSES = [['US', 'US'], ['Europe', 'Europe'], ['Commodities', 'Commodities']]
 
+// Exactly-zero moves are neither green nor red — they read as unchanged.
+const retTone = (v) =>
+  v == null ? 'var(--text-dim)' : v > 0 ? 'var(--bull)' : v < 0 ? 'var(--bear)' : 'var(--text-muted)'
+
 export default function Overview() {
   const { data, loading, error, reload } = useFetch(fetchOverview, [])
   const session = useSession()
@@ -139,6 +143,24 @@ function Metric({ label, value, tone }) {
   )
 }
 
+// Descending sort that is exact-zero safe: a move of 0.00% must sit between the
+// last positive and the first negative name, NOT at the end of the row. (The old
+// `b[metric] || -99` coerced a legitimate 0 to -99 and sank it past every loser.)
+// Only genuinely missing values (null/undefined/NaN) go last.
+function byMetricDesc(metric) {
+  const val = (r) => {
+    const v = r?.[metric]
+    return typeof v === 'number' && Number.isFinite(v) ? v : null
+  }
+  return (a, b) => {
+    const va = val(a), vb = val(b)
+    if (va === null && vb === null) return 0
+    if (va === null) return 1
+    if (vb === null) return -1
+    return vb - va
+  }
+}
+
 function Heatmap({ heatmap, sectors, metric, onPick }) {
   if (!heatmap?.length) return <span className="lbl-dim">No data for this universe</span>
   const bySector = {}
@@ -148,14 +170,14 @@ function Heatmap({ heatmap, sectors, metric, onPick }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {order.map((sec) => {
-        const tiles = (bySector[sec] || []).slice().sort((a, b) => (b[metric] || -99) - (a[metric] || -99))
+        const tiles = (bySector[sec] || []).slice().sort(byMetricDesc(metric))
         if (!tiles.length) return null
         const agg = (sectors || []).find((s) => s.sector === sec)
         return (
           <div key={sec}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
               <span className="lbl">{sec}</span>
-              <span className="num lbl" style={{ color: (agg?.[aggKey] || 0) >= 0 ? 'var(--bull)' : 'var(--bear)' }}>
+              <span className="num lbl" style={{ color: retTone(agg?.[aggKey]) }}>
                 {fmtPct(agg?.[aggKey])}
               </span>
             </div>
@@ -200,7 +222,7 @@ function SimpleMoverList({ title, rows, onPick }) {
           <div key={r.symbol} onClick={() => onPick(r.symbol)}
             style={{ display: 'flex', justifyContent: 'space-between', cursor: 'pointer', gap: 8 }}>
             <span className="num" style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.label || r.symbol}</span>
-            <span className="num" style={{ color: (r.ret_1d || 0) >= 0 ? 'var(--bull)' : 'var(--bear)', flexShrink: 0, whiteSpace: 'nowrap' }}>{fmtPct(r.ret_1d)}</span>
+            <span className="num" style={{ color: retTone(r.ret_1d), flexShrink: 0, whiteSpace: 'nowrap' }}>{fmtPct(r.ret_1d)}</span>
           </div>
         ))}
       </div>
@@ -215,7 +237,7 @@ function MoverList({ title, rows, field, suffix = '', onPick }) {
         {rows.slice(0, 8).map((r) => {
           const v = r[field]
           const isPct = field.startsWith('ret')
-          const tone = isPct ? (v >= 0 ? 'var(--bull)' : 'var(--bear)') : 'var(--text)'
+          const tone = isPct ? retTone(v) : 'var(--text)'
           return (
             <div key={r.symbol} onClick={() => onPick(r.symbol)}
               style={{ display: 'flex', justifyContent: 'space-between', cursor: 'pointer', gap: 8 }}>

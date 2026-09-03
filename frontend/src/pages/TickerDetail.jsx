@@ -12,31 +12,53 @@ import Plotly from 'plotly.js-dist-min'
 import { fetchTicker, fetchIntraday, fetchOptions, fetchAnalysis, fetchFundamentals } from '../api/client'
 import { useStore } from '../store/useStore'
 import { useFetch, StateView, Panel, Pill, fmtNum, fmtPct, fmtPctU, toneOf } from '../components/ui'
-import CandleChart from '../components/CandleChart'
+import TVChart from '../components/TVChart'
 
-const PERIODS = ['3mo', '6mo', '1y', '2y', '5y']
+// The daily chart ALWAYS loads the instrument's entire history, once per
+// ticker. The period buttons then only move the visible window — they do not
+// refetch.
+//
+// This is how TradingView behaves and it is the difference between a chart you
+// can explore and a chart you can only look at: picking "3M" used to request
+// three months of bars, so there was literally nothing behind the left edge to
+// scroll back into, and a short series left most of the canvas empty. Now "3M"
+// frames the last ~63 sessions across the full width while a decade of bars
+// sits off-screen to the left, one drag away.
+//
+// Value = trading sessions to show. null = the whole history.
+const VIEWS = [
+  ['1M', 22], ['3M', 63], ['6M', 126], ['1Y', 252],
+  ['2Y', 504], ['5Y', 1260], ['10Y', 2520], ['ALL', null],
+]
 const INTRADAY_RES = ['1m', '5m', '15m', '30m', '60m']
 const regimeTone = (r) => (r === 'Bull' ? 'bull' : r === 'Bear' ? 'bear' : 'side')
 
 export default function TickerDetail() {
   const ticker = useStore((s) => s.ticker)
-  const period = useStore((s) => s.period)
-  const setPeriod = useStore((s) => s.setPeriod)
   const back = useStore((s) => s.back)
   const [mode, setMode] = React.useState('daily')
 
-  const [showRegime, setShowRegime] = React.useState(true)
+  // How many sessions the chart frames. Not a fetch parameter.
+  const [viewBars, setViewBars] = React.useState(252)
+
+  // Regime shading defaults OFF: a plain dark chart with a clean grid is the
+  // readable baseline, and the wash competes with the candles. It is one click
+  // away when you actually want it.
+  const [showRegime, setShowRegime] = React.useState(false)
   const [showMA50, setShowMA50] = React.useState(true)
   const [showMA200, setShowMA200] = React.useState(true)
   const [showBB, setShowBB] = React.useState(false)
   const [showTargets, setShowTargets] = React.useState(false)
+  const [showVolume, setShowVolume] = React.useState(true)
+  const [showRSI, setShowRSI] = React.useState(true)
 
   const [res, setRes] = React.useState('5m')
 
   // entry/exit selection (indices into the daily history)
   const [sel, setSel] = React.useState({ entry: null, exit: null })
-  // reset selection whenever the series changes
-  useEffect(() => { setSel({ entry: null, exit: null }) }, [ticker, period])
+  // Reset only when the SERIES changes. Zooming used to clear your markers,
+  // because the period was a fetch key; it no longer is.
+  useEffect(() => { setSel({ entry: null, exit: null }) }, [ticker])
 
   const handleCandleClick = useCallback((i) => {
     setSel((s) => {
@@ -48,7 +70,9 @@ export default function TickerDetail() {
 
   const clearSel = useCallback(() => setSel({ entry: null, exit: null }), [])
 
-  const daily = useFetch(() => fetchTicker(ticker, period), [ticker, period])
+  // One fetch per ticker, for everything the feed has. Cached server-side, so
+  // this is a cold-start cost only.
+  const daily = useFetch(() => fetchTicker(ticker, 'max'), [ticker])
   const analysis = useFetch(() => fetchAnalysis(ticker), [ticker])
   const priceTargets = analysis.data?.price_target
     ? { low: analysis.data.price_target.low, mean: analysis.data.price_target.mean, high: analysis.data.price_target.high }
@@ -83,14 +107,18 @@ export default function TickerDetail() {
             <>
               <div style={{ display: 'flex', gap: 4 }}>
                 <Chip label="Regime" on={showRegime} onClick={() => setShowRegime((v) => !v)} />
-                <Chip label="MA50" on={showMA50} onClick={() => setShowMA50((v) => !v)} accent="#5b9cf3" />
-                <Chip label="MA200" on={showMA200} onClick={() => setShowMA200((v) => !v)} accent="#e0a23a" />
+                <Chip label="MA50" on={showMA50} onClick={() => setShowMA50((v) => !v)} accent="#2962ff" />
+                <Chip label="MA200" on={showMA200} onClick={() => setShowMA200((v) => !v)} accent="#ff6d00" />
                 <Chip label="BB" on={showBB} onClick={() => setShowBB((v) => !v)} />
+                <Chip label="Vol" on={showVolume} onClick={() => setShowVolume((v) => !v)} accent="#26a69a" />
+                <Chip label="RSI" on={showRSI} onClick={() => setShowRSI((v) => !v)} accent="#7e57c2" />
                 <Chip label="Tgt" on={showTargets} onClick={() => setShowTargets((v) => !v)} accent="#2962ff" />
               </div>
               <div style={{ display: 'flex', gap: 4 }}>
-                {PERIODS.map((p) => (
-                  <button key={p} onClick={() => setPeriod(p)} className="num" style={selBtn(p === period)}>{p}</button>
+                {VIEWS.map(([label, bars]) => (
+                  <button key={label} onClick={() => setViewBars(bars)} className="num"
+                    title={`Frame the last ${bars ? `${bars} sessions` : 'entire history'} — the rest stays loaded, scroll left for it`}
+                    style={selBtn(bars === viewBars)}>{label}</button>
                 ))}
               </div>
             </>
@@ -110,14 +138,25 @@ export default function TickerDetail() {
       ) : (
       <div style={{ flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: '1fr 260px', gap: 10 }}>
         <Panel
-          title={mode === 'daily' ? 'Daily · OHLCV · click to set entry · right-click to clear' : `Intraday · ${res} · VWAP`}
+          title={mode === 'daily'
+            ? `${ticker} · D${hist.length ? ` · ${hist.length.toLocaleString()} bars loaded · ${hist[0].date} →` : ''}`
+            : `Intraday · ${res} · VWAP`}
+          right={mode === 'daily'
+            ? <span className="lbl-dim" style={{ fontSize: 9.5 }}>
+                scroll zoom · drag pan · ctrl+scroll price · click sets entry · right-click clears
+              </span>
+            : null}
           bodyStyle={{ padding: 0 }}
         >
           {mode === 'daily' ? (
             <StateView loading={daily.loading} error={daily.error} empty={!daily.loading && !daily.error && !hist.length}>
               <div style={{ height: '100%', minHeight: 360 }}>
-                <CandleChart history={hist} showBB={showBB} showRegime={showRegime} showMA50={showMA50} showMA200={showMA200}
-                  onCandleClick={handleCandleClick} onClearSelection={clearSel} entryIndex={sel.entry} exitIndex={sel.exit}
+                <TVChart history={hist} showBB={showBB} showRegime={showRegime}
+                  showMA50={showMA50} showMA200={showMA200}
+                  showVolume={showVolume} showRSI={showRSI}
+                  viewBars={viewBars}
+                  onCandleClick={handleCandleClick} onClearSelection={clearSel}
+                  entryIndex={sel.entry} exitIndex={sel.exit}
                   priceTargets={showTargets ? priceTargets : null} />
               </div>
             </StateView>

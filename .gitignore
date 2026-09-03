@@ -1,20 +1,76 @@
-# Python
+# ============================================================
+# money_dashboard — .gitignore
+# Rule of thumb: if it holds a SECRET or can be REGENERATED, it stays out.
+# ============================================================
+
+# ── Secrets / local config ──────────────────────────────────
+# .env holds FRED_API_KEY. .env.example is committed as the template.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+
+# ── Databases (all regenerated locally) ─────────────────────
+# cache.db      OHLCV price cache — warms on boot
+# search.db     ticker search index — seeds from data/*.csv
+# options_iv.db daily ATM-IV snapshots for IV rank (accumulates over time)
+# sentiment.db  NAAIM / AAII positioning snapshots
+# watchlist.db  your watchlist
+#
+# NOTE: options_iv.db and sentiment.db accumulate history that CANNOT be
+# backfilled from any feed. They are still ignored (they are personal state,
+# not code), but back them up separately if the IV-rank history matters to you.
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# ── Python ──────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
+*$py.class
 .venv/
 venv/
+env/
+ENV/
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
 
-# Local config / secrets
-.env
-
-# Databases (regenerated: cache.db warms on boot, search.db seeds from CSVs)
-*.db
-
-# Node / frontend
+# ── Node / frontend ─────────────────────────────────────────
 node_modules/
 dist/
+dist-ssr/
 .vite/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# OS
+# ── Editors / OS ────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+
+# VS Code: keep shared workspace settings, ignore per-machine state
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# ── Logs / scratch ──────────────────────────────────────────
+*.log
+logs/
+tmp/
+scratch/
